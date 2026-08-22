@@ -9,13 +9,15 @@
 # This is free software, licensed under the MIT License.
 # See /LICENSE for more information.
 #
-
 name: OpenWrt Builder
-
 on:
   repository_dispatch:
   workflow_dispatch:
-
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
@@ -25,13 +27,11 @@ env:
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
-  UPLOAD_RELEASE: true
+  UPLOAD_RELEASE: false
   TZ: Asia/Shanghai
-
 jobs:
   build:
     runs-on: ubuntu-22.04
-
     steps:
     - name: Checkout
       uses: actions/checkout@main
@@ -56,6 +56,11 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+
+    # ========== 新增 SSH 在线终端步骤 ==========
+    - name: SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
 
     - name: Load custom feeds
       run: |
