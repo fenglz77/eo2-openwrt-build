@@ -93,7 +93,7 @@ jobs:
     # ✅ feeds、基础配置全部加载完毕后，再SSH暂停手动menuconfig微调
     # =====================
     - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
+      uses: mxschmitt/action-tmate@v3
       if: github.event.inputs.ssh == 'true'
 
     # =====================
